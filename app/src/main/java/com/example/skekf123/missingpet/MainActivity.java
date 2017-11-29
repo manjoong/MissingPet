@@ -7,12 +7,38 @@ import android.support.v7.widget.Toolbar; //툴바 생성
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import static com.example.skekf123.missingpet.R.layout.support_simple_spinner_dropdown_item;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+
 
 
 public class MainActivity extends AppCompatActivity {
+    EditText et; //댓글입력받는 창
+    TextView tv; //임시로 댓글 보여주는 창(TEST 창 )
+    Button btn; //입력된 댓글 전송 버튼
+    StringBuffer sb = new StringBuffer(); //입력된 댓글을 저장해서 만들어진 데이터 덩어리
+    StringBuffer JsonComment = new StringBuffer(); //작성된 댓글을 json server에 전송하기 위해 json 형식으로 만든다
+    StringBuffer comments = new StringBuffer();
+    Calendar calendar = Calendar.getInstance();//현재 시각
+
+
+
+
+
+
 
     Toolbar toolbar; //툴바 선언
 
@@ -28,7 +54,16 @@ public class MainActivity extends AppCompatActivity {
         // ↓툴바의 홈버튼의 이미지를 변경(기본 이미지는 뒤로가기 화살표)
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_back);
 
+        et = (EditText)findViewById(R.id.et); //댓글 입력창
+        tv = (TextView)findViewById(R.id.tv); //입력된 댓글 보여주는 창 (temp)
+        btn = (Button)findViewById(R.id.btn);
+        btn.setOnClickListener(myClickListener); //댓글 전송 버튼
+        ArrayList<String> nameList = new ArrayList<>();
+
+
     }
+
+
 
     //추가된 소스, ToolBar에 menu.xml을 인플레이트함
     @Override
@@ -38,6 +73,60 @@ public class MainActivity extends AppCompatActivity {
         menuInflater.inflate(R.menu.menu, menu);
         return true;
     }
+
+    View.OnClickListener myClickListener = new View.OnClickListener() //댓글 전송 버튼 눌렀을시 이벤트
+    {
+        @Override //json 값으로 전송 시키기위해
+        public void onClick(View v)
+        {
+            JsonComment =null;
+            StringBuffer JsonComment = new StringBuffer(); //위에서 선언했지만 null했으므로 재생성 해야한다.
+            String startJson = "[";
+            String endJson ="]";
+
+            if(!sb.toString().equals(""))
+            {
+                sb.append(",");
+            }
+            String temp = "{\"comment\""+":"+"\""+et.getText().toString()+"\"" + "}";
+            sb.append(temp);
+            JsonComment.append(startJson+sb+endJson);
+//            tv.setText(JsonComment);
+
+
+            try
+            {
+                String str = calendar.getTime().toString().substring(4,16); //현재 시간
+                comments = null;
+                StringBuffer comments = new StringBuffer();//위에서 선언해 줬지만 초기화 시켜서 새로운 댓글을 입력시켜줌
+
+
+                JSONArray jsonArray = new JSONArray(JsonComment.toString());
+                System.out.println("GOOD");
+                for (int i = 0; i < jsonArray.length(); i++)
+                {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    comments.append(jsonObject.getString("comment"));
+                    comments.append(str);
+                    comments.append("\n");
+                }
+                tv.setText(comments+"\n");
+
+
+
+            }
+            catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+
+
+
+        }
+
+    };
+
+
     //추가된 소스, ToolBar에 추가된 항목의 select 이벤트를 처리하는 함수
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -45,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_settings:
                 // User chose the "Settings" item, show the app settings UI...
-                Toast.makeText(getApplicationContext(), "환경설정 버튼 클릭됨", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "새로고침", Toast.LENGTH_LONG).show();
                 return true;
             default:
                 // If we got here, the user's action was not recognized.
@@ -54,4 +143,6 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
 }
