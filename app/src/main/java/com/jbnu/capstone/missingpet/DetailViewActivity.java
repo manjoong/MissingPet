@@ -46,7 +46,7 @@ public class DetailViewActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);//액션바와 같게 만들어줌
         // ↓툴바에 홈버튼을 활성화
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        // ↓툴바의 홈버튼의 이미지를 변경(기본 이미지는 뒤로가기 화살표)
+        // ↓툴바의 홈버튼의 이미지를 변경(기본 이미지는 뒤로가기 화살표)//
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_back);
 
         et = (EditText)findViewById(R.id.et); //댓글 입력창

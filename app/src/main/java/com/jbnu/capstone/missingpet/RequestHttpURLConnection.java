@@ -1,6 +1,7 @@
-package com.example.skekf123.missingpet;
+package com.jbnu.capstone.missingpet;
 
 import android.content.ContentValues;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
